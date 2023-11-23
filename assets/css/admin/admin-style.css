@@ -1,0 +1,49 @@
+:root{
+    --wsf-color-primary: #a55eea;
+    --wsf-color-secondary: #8854d0;
+}
+
+.wsf-title {
+	display: flex;
+	align-items: center;
+}
+.wsf-title a{
+    display: inline-flex;
+}
+.wsf-add-new-subscriber-form{
+    width: 100%;
+    max-width: 500px;
+    margin-top: 50px;
+    padding: 50px;
+    border: 1px solid #dee2e6;
+    background-color: #f5f6fa;
+}
+.wsf-add-new-subscriber-form .label-parent{
+    display: flex;
+}
+.wsf-add-new-subscriber-form .label-parent>*{
+    padding: 5px 15px;
+    border: 2px solid var(--wsf-color-primary) !important;
+    box-shadow: none !important;
+    outline: 0;
+    outline: 0;
+}
+
+.wsf-add-new-subscriber-form .label-parent input {
+    display: flex;
+    width: 100%;
+}
+.wsf-add-new-subscriber-form .label-parent input:focus{
+    border-color: var(--wsf-color-secondary);
+}
+.wsf-add-new-subscriber-form .label-parent button {
+    min-width: 155px;
+    margin-left: 25px;
+    background-color: var(--wsf-color-primary);
+    color: #fff;
+    cursor: pointer;
+}
+.wsf-add-new-subscriber-form .label-parent button:hover{
+    background-color: var(--wsf-color-secondary);
+    
+}
