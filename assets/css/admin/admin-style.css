@@ -23,6 +23,9 @@
     color: white;
 }
 .wsf-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 	width: 100%;
 	max-width: 550px;
 	background: white;
@@ -33,12 +36,22 @@
     box-sizing: border-box;
     font-weight: 600;
 }
+.wsf-notice .wsf-notice-dismiss{
+    display: inline-flex;
+    box-sizing: border-box;
+    padding: 3px;
+    cursor: pointer;
+    color: black;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
 .wsf-add-new-subscriber-form{
     width: 100%;
     box-sizing: border-box;
     font-weight: 600;
     max-width: 550px;
-    margin-top: 50px;
+    margin-top: 30px;
     padding: 30px 50px;
     border: 1px solid #dee2e6;
     background-color: #f5f6fa;
