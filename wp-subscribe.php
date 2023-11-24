@@ -2,15 +2,15 @@
 /*
 Plugin Name: WSF Subscriber
 Description: An intuitive plugin for managing email subscriptions on WordPress.
-Version: 1.0
+Version: 2.0
 Author: Rubel Mahmud ( Sujan )
 */
 
 // Add your plugin functionalities here
 // For demonstration purposes, let's include the description in the plugin page
 
-use Wsf\Inc\Subscribe_REST_API_CONTROLLER;
-use Wsf\Inc\Create_Table;
+// use Wsf\Inc\Subscribe_REST_API_CONTROLLER;
+use Wsf\Inc\API\Register_Subscription_APIs as WCF_Register_APIs;
 use Wsf\Inc\Admin\Dashboard_Menu;
 
 define('DOMAIN', 'wp-subcribe' );
@@ -25,18 +25,23 @@ final class WSF_Subscriber{
     // create private instance
     private static $instance;
 
+    public $table = 'email_subscribers';
+
     public function __construct(){
 
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts'] );
 
         // control rest route
-        new Subscribe_REST_API_CONTROLLER;
+        // new Subscribe_REST_API_CONTROLLER;
 
-        // create table
-        new Create_Table;
+        // register api routes
+        new WCF_Register_APIs;
 
         // create dashboard menu
         new Dashboard_Menu;
+        
+        // create database table
+        register_activation_hook( __FILE__, [ $this, 'create_subscribers_table' ] );
 
     }
     
@@ -62,9 +67,36 @@ final class WSF_Subscriber{
         return self::$instance;
     }
 
+    /**
+     * create database table called email_subscribers
+     *
+     * @return void
+     */
+    public function create_subscribers_table(){
+        global $wpdb;
+
+        $table = $wpdb->prefix . $this->table;
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE IF NOT EXISTS $table(
+             id mediumint(9) NOT NULL AUTO_INCREMENT,
+             email VARCHAR(55) NOT NULL UNIQUE,
+             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+             PRIMARY KEY  (id)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        // execute the query to create table
+        dbDelta( $sql );
+
+    }
+
 }
 
-function subscribe(){
+function wsf_subscriber(){
     return WSF_Subscriber::get_instance();
 }
-subscribe();
+wsf_subscriber();

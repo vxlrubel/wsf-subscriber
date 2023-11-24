@@ -35,8 +35,8 @@ class Subscribe_REST_API_CONTROLLER {
 
         // add new subscriber
         register_rest_route(
-            $this->rest_base,
-            $this->route_create,
+            'wsf/v1',
+            'subscribe',
             [
                 'methods' => 'POST',
                 'callback'=> [ $this, 'add_new_subscriber' ]
@@ -47,5 +47,23 @@ class Subscribe_REST_API_CONTROLLER {
 
     public function add_new_subscriber( $request ){
         global $wpdb;
+
+        $table = $wpdb->prefix . 'email_subscribers';
+
+        $data = $request->get_params();
+
+        $email = sanitize_email($data['email']);
+
+        $wpdb->insert(
+            $table,
+            [
+                'email'      => $email,
+                'created_at' => current_time('mysql'),
+                'updated_at' => current_time('mysql')
+            ],
+            [ '%s','%s', '%s', ]
+        );
+
+        return new WP_REST_Response(array('message' => 'Data inserted successfully'), 200);
     }
 }

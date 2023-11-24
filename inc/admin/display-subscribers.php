@@ -15,7 +15,8 @@ defined('ABSPATH') || exit;
             <tr>
                 <th width="50px">Serial</th>
                 <th>Email Address</th>
-                <th>Created Date</th>
+                <th>Created At</th>
+                <th>Updated At</th>
                 <th>Action</th>
             </tr>
             
@@ -26,6 +27,7 @@ defined('ABSPATH') || exit;
                 <td>1</td>
                 <td class="lowercase">example@gmail.com</td>
                 <td>23 dec 2023</td>
+                <td>24 dec 2023</td>
                 <td>
                     <a href="javascript:void(0)" data-edit-id="1" class="wsf-item-edit">Edit</a>
                     <a href="javascript:void(0)" data-delete-id="1" class="wsf-item-delete">Delete</a>
@@ -35,6 +37,7 @@ defined('ABSPATH') || exit;
                 <td>2</td>
                 <td class="lowercase">hellotest@gmail.com</td>
                 <td>23 dec 2023</td>
+                <td>24 dec 2023</td>
                 <td>
                     <a href="javascript:void(0)" data-edit-id="2" class="wsf-item-edit">Edit</a>
                     <a href="javascript:void(0)" data-delete-id="2" class="wsf-item-delete">Delete</a>
@@ -46,7 +49,8 @@ defined('ABSPATH') || exit;
            <tr>
                <th>Serial</th>
                <th>Email Address</th>
-               <th>Created Date</th>
+                <th>Created At</th>
+                <th>Updated At</th>
                <th>Action</th>
            </tr>
         </tfoot>
