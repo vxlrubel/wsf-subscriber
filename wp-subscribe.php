@@ -20,7 +20,7 @@ define('WSF_VERSION', '1.0' );
 require_once dirname(__FILE__) . '/inc/autoload.php';
 
 
-final class Subscribe{
+final class WSF_Subscriber{
 
     // create private instance
     private static $instance;
