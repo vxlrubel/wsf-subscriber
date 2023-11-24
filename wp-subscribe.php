@@ -42,7 +42,7 @@ final class Subscribe{
      */
     public function enqueue_admin_scripts(){
         wp_enqueue_style('wp-subscribe-styles', plugins_url('assets/css/admin/admin-style.css', __FILE__), [], WSF_VERSION, 'all');
-
+        wp_enqueue_script( 'wp-subscribe-scripts', plugins_url('assets/js/admin/admin-script.js', __FILE__), ['jquery'], WSF_VERSION, true );
     }
 
     /**

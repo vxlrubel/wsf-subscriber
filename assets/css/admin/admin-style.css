@@ -6,15 +6,40 @@
 .wsf-title {
 	display: flex;
 	align-items: center;
+	padding: 0 50px;
+	background: white;
 }
 .wsf-title a{
     display: inline-flex;
+    margin-left: 15px;
+    text-decoration: none;
+    border: 1px solid var(--wsf-color-primary);
+    padding: 5px 15px;
+    color: var(--wsf-color-primary);
+    box-shadow: none;
+}
+.wsf-title a:hover{
+    background-color: var(--wsf-color-secondary);
+    color: white;
+}
+.wsf-notice {
+	width: 100%;
+	max-width: 550px;
+	background: white;
+	margin-top: 30px;
+	padding: 10px 20px;
+	border-left: 4px solid green;
+	color: green;
+    box-sizing: border-box;
+    font-weight: 600;
 }
 .wsf-add-new-subscriber-form{
     width: 100%;
-    max-width: 500px;
+    box-sizing: border-box;
+    font-weight: 600;
+    max-width: 550px;
     margin-top: 50px;
-    padding: 50px;
+    padding: 30px 50px;
     border: 1px solid #dee2e6;
     background-color: #f5f6fa;
 }
@@ -37,7 +62,7 @@
     border-color: var(--wsf-color-secondary);
 }
 .wsf-add-new-subscriber-form .label-parent button {
-    min-width: 155px;
+    min-width: 120px;
     margin-left: 25px;
     background-color: var(--wsf-color-primary);
     color: #fff;
@@ -46,4 +71,36 @@
 .wsf-add-new-subscriber-form .label-parent button:hover{
     background-color: var(--wsf-color-secondary);
     
+}
+.wsf-ajax-loading {
+    position: relative;
+	display: inline-block;
+    box-sizing: border-box;
+	height: 20px;
+	width: 20px;
+	border: 1px solid white;
+	border-radius: 50%;
+	border-top-color: #FC427B;
+	border-bottom-color: #FC427B;
+    animation: wsf-ajax-loading 0.5s linear infinite;
+}
+.wsf-ajax-loading::after{
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    content: '';
+    border: 1px solid white;
+    border-top-color: red;
+    border-bottom-color: red;
+    border-radius: 50%;
+    animation: wsf-ajax-loading 0.3s linear infinite reverse;
+}
+@keyframes wsf-ajax-loading{
+    0%{
+        transform: rotate(0deg);
+    }100%{
+        transform: rotate(360deg);
+    }
 }
