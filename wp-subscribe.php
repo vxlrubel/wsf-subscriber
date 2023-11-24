@@ -65,6 +65,6 @@ final class WSF_Subscriber{
 }
 
 function subscribe(){
-    return Subscribe::get_instance();
+    return WSF_Subscriber::get_instance();
 }
 subscribe();
