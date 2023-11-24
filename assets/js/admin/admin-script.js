@@ -1,9 +1,11 @@
 (function($){
     const doc = $(document);
     const AddNew = $('#add_new_subscriber');
+    const SubscriberListParent = $('.wsf-list-parent');
     class WPSubscriberForm{
         init(){
             this.addNewSubscriber();
+            this.subscriberDeleteEdit();
         }
 
         addNewSubscriber(){
@@ -29,6 +31,33 @@
                 }
             });
         }
+
+        subscriberDeleteEdit(){
+            SubscriberListParent.on('click', function(e){
+                
+                let dataId      = e.target.attributes[1].nodeValue;
+                let targetClass = e.target.className;
+
+                // data delete
+                if( 'wsf-item-delete' == targetClass ){
+                    e.preventDefault();
+                    let targetRow = $(this).find('tr[data-item-id="'+dataId+'"]');
+                   targetRow.css('backgroundColor', '#f53b57').fadeOut(300);
+                   setTimeout(() => {
+                    targetRow.remove();
+                   }, 300);
+                }
+
+                // data edit
+                if( 'wsf-item-edit' == targetClass ){
+                    e.preventDefault();
+                    let targetRow = $(this).find('tr[data-item-id="'+dataId+'"]');
+                    targetRow.css('backgroundColor', 'blue');
+                }
+
+            });
+        }
+        
     }
 
     const WSF = new WPSubscriberForm;

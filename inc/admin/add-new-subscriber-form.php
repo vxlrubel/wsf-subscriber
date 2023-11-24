@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
 <div class="wrap add-new-subscribe-form-parent">
     <div class="wsf-title">
         <h2>Add New Subscriber</h2>
-        <a href="<?php echo admin_url( "admin.php?page={$this->slug}" );?>">View Subscriber</a>
+        <a href="<?php echo admin_url( "admin.php?page={$this->parent_slug}" );?>">View Subscriber</a>
     </div>
     
     <form action="" class="wsf-add-new-subscriber-form">
