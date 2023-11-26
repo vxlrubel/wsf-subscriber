@@ -1,34 +1,74 @@
 (function($){
     const doc = $(document);
-    const AddNew = $('#add_new_subscriber');
+    const subscriberButton = $('#add_new_subscriber');
+    const subscriberForm = $('.wsf-add-new-subscriber-form');
     const SubscriberListParent = $('.wsf-list-parent');
     class WPSubscriberForm{
         init(){
-            this.addNewSubscriber();
             this.subscriberDeleteEdit();
+            this.removeUpdatedNotice();
+            this.addNewSubscriberSubmitionForm();
         }
 
-        addNewSubscriber(){
-            AddNew.on('click', function(e){
-                e.preventDefault();
-                let selfTextStore = $(this).text();
-                let noticeSuccess = '<div class="wsf-notice"><span>Successfully add a new subscriber...</span><span class="wsf-notice-dismiss">&times;</span></div>';
-                $(this).empty().html('<span class="wsf-ajax-loading"></span>');
+        get_ajax_notice( message, cssClass = 'success' ){
+            let html  = `<div class="wsf-notice ${cssClass}"><span>${message}</span><span class="wsf-notice-dismiss">&times;</span></div>`;
 
-                setTimeout(()=>{
-                    $(this).empty().text(selfTextStore);
-                    $(this).closest('.wrap').children('.wsf-title').after(noticeSuccess)
-                },1000);
+            return html;
+        }
+        insert_data_using_ajax_submition(){
+
+            let data = subscriberForm.serialize();
+            let buttonText = subscriberButton.text();
+            
+
+            $.ajax({
+                type   : 'POST',
+                url    : ws.ajax_url,
+                data   : data,
+                success: (response)=>{
+
+                    // success status
+                    if( response.success ){
+                        subscriberForm.before( this.get_ajax_notice( response.data ) );
+                        
+                        // reset email field
+                        subscriberForm.find('input[type="email"]').val('');
+                    }
+
+                    // error status
+                    if(! response.success ){
+                        subscriberForm.before( this.get_ajax_notice( response.data, 'wsf-error' ) );
+                    }
+                    
+                    subscriberButton.empty().text(buttonText);
+                },
+                beforeSend: ()=>{
+                    subscriberButton.empty().html('<span class="wsf-ajax-loading"></span>')
+                }
+            });
+        }
+        addNewSubscriberSubmitionForm(){
+            subscriberForm.on('submit', (e)=>{
+                e.preventDefault();
+
+                this.insert_data_using_ajax_submition();
             });
 
-            $('.add-new-subscribe-form-parent').on('click', function(e){
-                console.dir(e.target.className);
-                if( e.target.className == 'wsf-notice-dismiss' ){
-                    $(this).find('.wsf-notice').fadeOut(400);
-                    setTimeout(() => {
-                        $(this).find('.wsf-notice').remove();
-                    }, 500);
-                }
+            subscriberButton.on('click', (e)=>{
+                e.preventDefault();
+                
+                this.insert_data_using_ajax_submition();
+            });
+        }
+
+        removeUpdatedNotice(){
+            $('.add-new-subscribe-form-parent').on('click', 'span.wsf-notice-dismiss', function(e){
+
+                let notice = $(this).closest('.wsf-notice');
+
+                notice.fadeOut(300, ()=>{
+                    notice.remove();
+                });
             });
         }
 
@@ -42,10 +82,9 @@
                 if( 'wsf-item-delete' == targetClass ){
                     e.preventDefault();
                     let targetRow = $(this).find('tr[data-item-id="'+dataId+'"]');
-                   targetRow.css('backgroundColor', '#f53b57').fadeOut(300);
-                   setTimeout(() => {
-                    targetRow.remove();
-                   }, 300);
+                   targetRow.css('background-color', '#f53b57').fadeOut(300, ()=>{
+                        targetRow.remove();
+                   });
                 }
 
                 // data edit

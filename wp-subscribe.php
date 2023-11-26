@@ -10,8 +10,8 @@ Author: Rubel Mahmud ( Sujan )
 // For demonstration purposes, let's include the description in the plugin page
 
 // use Wsf\Inc\Subscribe_REST_API_CONTROLLER;
-use Wsf\Inc\API\Register_Subscription_APIs as WCF_Register_APIs;
 use Wsf\Inc\Admin\Dashboard_Menu;
+use Wsf\Inc\Admin\Ajax_Handler;
 
 define('DOMAIN', 'wp-subcribe' );
 define('WSF_VERSION', '1.0' );
@@ -34,11 +34,11 @@ final class WSF_Subscriber{
         // control rest route
         // new Subscribe_REST_API_CONTROLLER;
 
-        // register api routes
-        new WCF_Register_APIs;
-
         // create dashboard menu
         new Dashboard_Menu;
+
+        // add new subscriber
+        new Ajax_Handler;
         
         // create database table
         register_activation_hook( __FILE__, [ $this, 'create_subscribers_table' ] );
@@ -53,6 +53,9 @@ final class WSF_Subscriber{
     public function enqueue_admin_scripts(){
         wp_enqueue_style('wp-subscribe-styles', plugins_url('assets/css/admin/admin-style.css', __FILE__), [], WSF_VERSION, 'all');
         wp_enqueue_script( 'wp-subscribe-scripts', plugins_url('assets/js/admin/admin-script.js', __FILE__), ['jquery'], WSF_VERSION, true );
+        wp_localize_script( 'wp-subscribe-scripts', 'ws', [
+            'ajax_url' => admin_url( 'admin-ajax.php' )
+        ] );
     }
     /**
      * store instance
