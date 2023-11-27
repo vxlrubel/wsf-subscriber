@@ -2,12 +2,18 @@
 
 defined('ABSPATH') || exit;
 
-// control rest route
-require_once dirname(__FILE__) . '/api/register_api_subscriber_display.php';
-require_once dirname(__FILE__) . '/api/register_api_create_subscriber.php';
+// Load admin file
+$files = [
+    'display-subscriber-lists',
+    'subscribe-form',
+    'ajax-handler',
+    'dashboard-menu',
+];
 
-// handle ajax request
-require_once dirname(__FILE__) . '/admin/ajax-request.php';
-
-// create admin menu
-require_once dirname(__FILE__) . '/admin/create-admin-menu.php';
+foreach ( $files as $file ) {
+    if( file_exists( dirname(__FILE__) . "/admin/class-{$file}.php" ) ){
+        require_once dirname(__FILE__) . "/admin/class-{$file}.php"; 
+    }else{
+        throw new Exception( "This {$file} file is not found." );
+    }
+}

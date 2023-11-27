@@ -45,10 +45,14 @@ class Dashboard_Menu{
     }
 
     public function display_subscribers(){
-        require_once dirname(__FILE__) . '/display-subscribers.php';
+
+        new Display_Subscriber_Lists( $this->add_new_slug );
+        
     }
 
     public function add_subscriber_form(){
-        require_once dirname(__FILE__) . '/add-new-subscriber-form.php';
+
+       new Subscribe_Form( $this->parent_slug );
+       
     }
 }

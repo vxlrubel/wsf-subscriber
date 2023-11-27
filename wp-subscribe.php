@@ -10,12 +10,13 @@ Author: Rubel Mahmud ( Sujan )
 // For demonstration purposes, let's include the description in the plugin page
 
 // use Wsf\Inc\Subscribe_REST_API_CONTROLLER;
-use Wsf\Inc\Admin\Dashboard_Menu;
-use Wsf\Inc\Admin\Ajax_Handler;
+
 
 define('DOMAIN', 'wp-subcribe' );
 define('WSF_VERSION', '1.0' );
 
+use Wsf\Inc\Admin\Dashboard_Menu;
+use Wsf\Inc\Admin\Ajax_Handler;
 
 require_once dirname(__FILE__) . '/inc/autoload.php';
 
@@ -76,6 +77,7 @@ final class WSF_Subscriber{
      * @return void
      */
     public function create_subscribers_table(){
+        
         global $wpdb;
 
         $table = $wpdb->prefix . $this->table;
