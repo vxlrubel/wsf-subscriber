@@ -96,7 +96,7 @@ class Display_Subscriber_Lists{
 
         $table = $wpdb->prefix . 'email_subscribers';
 
-        $sql = "SELECT * FROM $table ORDER BY created_at DESC";
+        $sql = "SELECT * FROM $table ORDER BY created_at DESC LIMIT 10";
 
         $rows = $wpdb->get_results( $sql );
 
