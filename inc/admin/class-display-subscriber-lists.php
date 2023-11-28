@@ -105,7 +105,7 @@ class Display_Subscriber_Lists{
         foreach ( $rows as $key => $row ){ ?>
             <tr data-item-id="<?php echo esc_attr( $row->id ); ?>">
                 <td><?php echo esc_html( $key + 1 ); ?></td>
-                <td class="lowercase"><?php echo esc_html( $row->email ); ?></td>
+                <td class="lowercase subscriber-email"><?php echo esc_html( $row->email ); ?></td>
                 <td><?php echo esc_html( $row->created_at ); ?></td>
                 <td><?php echo esc_html( $row->updated_at ); ?></td>
                 <td>

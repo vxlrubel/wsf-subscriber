@@ -1,25 +1,79 @@
 (function($){
     const doc = $(document);
-    const subscriberButton = $('#add_new_subscriber');
-    const subscriberForm = $('.wsf-add-new-subscriber-form');
-    const SubscriberListParent = $('.wsf-list-parent');
-    class WPSubscriberForm{
+    const SUBSCRIBER_BUTTON = $('#add_new_subscriber');
+    const SUBSCRIBER_FORM = $('.wsf-add-new-subscriber-form');
+    const SUBSCRIBER_LIST_PARENT = $('.wsf-list-parent');
+    class WPSUBSCRIBER_FORM{
+
         init(){
-            this.subscriberDeleteEdit();
+            this.openSubscriberPopupForm();
             this.removeUpdatedNotice();
             this.addNewSubscriberSubmitionForm();
+            this.updateSubscriber();
+            this.destroyPopupUpdateForm();
+        }
+
+        destroyPopupUpdateForm(){
+            SUBSCRIBER_LIST_PARENT.on('click', 'div.wsf-overlay', function(e){
+                e.preventDefault();
+
+                let selfClass = $(this).attr('class');
+
+                if( selfClass === e.target.className ){
+                   $(this).fadeOut(300, ()=>{
+                        $(this).remove();
+                   });
+                }
+            });
+        }
+
+        update_subscriber(){
+            let button = $('button.update-subscriber');
+            let buttonText = button.text();
+            let data = $('form#wsf-update-form').serialize();
+            
+            $.ajax({
+                type   : 'POST',
+                url    : ws.ajax_url,
+                data   : data,
+                success: function (response) {
+
+                    console.log(response.data)
+                    
+                    button.text(buttonText);
+                    
+                    $('div.wsf-overlay').fadeOut(300, ()=>{
+                        $('div.wsf-overlay').remove();
+                   });
+                },
+                beforeSend: ()=>{
+                    button.text('loading...');
+                }
+            });
+        }
+
+        updateSubscriber(){
+            SUBSCRIBER_LIST_PARENT.on('click', 'button.update-subscriber', (e)=>{
+                e.preventDefault();
+                this.update_subscriber();
+            });
+            
+            SUBSCRIBER_LIST_PARENT.on('submit', 'form#wsf-update-form', (e)=>{
+                e.preventDefault();
+                this.update_subscriber();
+            });
         }
 
         get_ajax_notice( message, cssClass = 'success' ){
+
             let html  = `<div class="wsf-notice ${cssClass}"><span>${message}</span><span class="wsf-notice-dismiss">&times;</span></div>`;
 
             return html;
         }
-        insert_data_using_ajax_submition(){
 
-            let data = subscriberForm.serialize();
-            let buttonText = subscriberButton.text();
-            
+        insert_data_using_ajax_submition(){
+            let data = SUBSCRIBER_FORM.serialize();
+            let buttonText = SUBSCRIBER_BUTTON.text();
 
             $.ajax({
                 type   : 'POST',
@@ -29,41 +83,40 @@
 
                     // success status
                     if( response.success ){
-                        subscriberForm.before( this.get_ajax_notice( response.data ) );
+
+                        SUBSCRIBER_FORM.before( this.get_ajax_notice( response.data ) );
                         
                         // reset email field
-                        subscriberForm.find('input[type="email"]').val('');
+                        SUBSCRIBER_FORM.find('input[type="email"]').val('');
                     }
 
                     // error status
                     if(! response.success ){
-                        subscriberForm.before( this.get_ajax_notice( response.data, 'wsf-error' ) );
+                        SUBSCRIBER_FORM.before( this.get_ajax_notice( response.data, 'wsf-error' ) );
                     }
                     
-                    subscriberButton.empty().text(buttonText);
+                    SUBSCRIBER_BUTTON.empty().text(buttonText);
                 },
                 beforeSend: ()=>{
-                    subscriberButton.empty().html('<span class="wsf-ajax-loading"></span>')
+                    SUBSCRIBER_BUTTON.empty().html('<span class="wsf-ajax-loading"></span>')
                 }
             });
         }
+        
         addNewSubscriberSubmitionForm(){
-            subscriberForm.on('submit', (e)=>{
+            SUBSCRIBER_FORM.on('submit', (e)=>{
                 e.preventDefault();
-
                 this.insert_data_using_ajax_submition();
             });
 
-            subscriberButton.on('click', (e)=>{
+            SUBSCRIBER_BUTTON.on('click', (e)=>{
                 e.preventDefault();
-                
                 this.insert_data_using_ajax_submition();
             });
         }
 
         removeUpdatedNotice(){
             $('.add-new-subscribe-form-parent').on('click', 'span.wsf-notice-dismiss', function(e){
-
                 let notice = $(this).closest('.wsf-notice');
 
                 notice.fadeOut(300, ()=>{
@@ -72,34 +125,31 @@
             });
         }
 
-        subscriberDeleteEdit(){
-            SubscriberListParent.on('click', function(e){
-                
-                let dataId      = e.target.attributes[1].nodeValue;
-                let targetClass = e.target.className;
+        openSubscriberPopupForm(){
+            SUBSCRIBER_LIST_PARENT.on( 'click', 'a.wsf-item-edit', function(e){
+                e.preventDefault();
 
-                // data delete
-                if( 'wsf-item-delete' == targetClass ){
-                    e.preventDefault();
-                    let targetRow = $(this).find('tr[data-item-id="'+dataId+'"]');
-                   targetRow.css('background-color', '#f53b57').fadeOut(300, ()=>{
-                        targetRow.remove();
-                   });
-                }
+                let id = $(this).data('edit-id');
+                let email = $(this).closest('tr').find('.subscriber-email').text();
 
-                // data edit
-                if( 'wsf-item-edit' == targetClass ){
-                    e.preventDefault();
-                    let targetRow = $(this).find('tr[data-item-id="'+dataId+'"]');
-                    targetRow.css('backgroundColor', 'blue');
-                }
+                let html = `
+                    <div class="wsf-overlay">
+                        <form class="edit-form" id="wsf-update-form" method="POST">
+                            <input type="email" name="email" value="${email}">
+                            <input type="hidden" name="id" value="${id}">
+                            <input type="hidden" name="action" value="subscribe_update">
+                            <button type="button" class="update-subscriber">Update</button>
+                        </form>
+                    </div>
+                `;
 
-            });
+                SUBSCRIBER_LIST_PARENT.prepend( html );
+            } );
         }
         
     }
 
-    const WSF = new WPSubscriberForm;
+    const WSF = new WPSUBSCRIBER_FORM;
 
     // run the program.
     doc.ready(()=>{ WSF.init() });

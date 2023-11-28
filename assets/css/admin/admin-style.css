@@ -126,6 +126,9 @@
 
 
 /* subscribe list style */
+.wsf-list-parent{
+    position: relative;
+}
 .wsf-list-parent [class*="wsf-item-"]{
     display: inline-flex;
     text-decoration: none;
@@ -137,4 +140,53 @@
 }
 .wsf-list-parent .wsf-item-delete{
     background-color: #FC427B;
+}
+
+/* edit form */
+.wsf-list-parent .wsf-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,0.3);
+}
+.wsf-list-parent .edit-form {
+	position: sticky;
+    display: flex;
+	top: 150px;
+	width: 350px;
+	box-sizing: border-box;
+	background: white;
+	padding: 15px 20px;
+    margin: 0 auto;
+    border-radius: 4px;
+	z-index: 99999;
+}
+.wsf-list-parent .edit-form > * {
+    border: 1px solid #8c8f94;
+    box-shadow: none !important;
+    outline: 0;
+}
+.wsf-list-parent .edit-form input[type="email"]{
+    display: inline-block;
+    text-transform: lowercase;
+    width: calc(100% - 110px);
+}
+.wsf-list-parent .edit-form input[type="email"]:focus{
+    border-color: var(--wsf-color-secondary);
+}
+.wsf-list-parent .edit-form button {
+    display: inline-block;
+    width: 95px;
+	border-radius: 4px;
+	background: var(--wsf-color-primary);
+	color: white;
+    cursor: pointer;
+    margin-left: 15px;
+    border-color: var(--wsf-color-primary);
+}
+.wsf-list-parent .edit-form button:hover{
+    background-color: var(--wsf-color-secondary);
+    border-color: var(--wsf-color-secondary);
 }

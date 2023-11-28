@@ -20,6 +20,7 @@ class Subscribe_Form{
     public function add_new_form( $list_url ){
         ?>
             <div class="wrap add-new-subscribe-form-parent">
+                
                 <div class="wsf-title">
                     <h2>Add New Subscriber</h2>
                     <a href="<?php echo esc_url( admin_url( "admin.php?page={$list_url}" ) );?>">View Subscriber</a>
