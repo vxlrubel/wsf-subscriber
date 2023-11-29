@@ -58,9 +58,10 @@ class Display_Subscriber_Lists{
         $slug = sprintf( 'admin.php?page=%s', $add_new_subscriber_url );
 
         printf(
-            '<div class="wsf-title"><h2>Subscriber List</h2><a href="%s">%s</a></div>',
+            '<div class="wsf-title"><h2>Subscriber List</h2><a href="%s">%s</a><button class="wsf-list-refresh">%s</button></div>',
             esc_url( admin_url( $slug ) ),
-            esc_html('Add New')
+            esc_html('Add New'),
+            esc_html('Refresh')
         );
     }
 

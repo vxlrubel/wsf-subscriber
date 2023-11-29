@@ -7,9 +7,13 @@ defined('ABSPATH') || exit;
 
 class Ajax_Handler{
 
-    protected $add_action = 'add_new_subscriber';
-    protected $update_action = 'subscribe_update';
-    protected $delete_action = 'delete_existing_subscriber';
+    protected $add_action        = 'add_new_subscriber';
+
+    protected $update_action     = 'subscribe_update';
+
+    protected $delete_action     = 'delete_existing_subscriber';
+
+    protected $refresh_list_data = 'refresh_list_data';
 
     public function __construct(){
 
@@ -18,6 +22,41 @@ class Ajax_Handler{
         add_action( "wp_ajax_{$this->update_action}", [ $this, 'update_subscriber'] );
 
         add_action( "wp_ajax_{$this->delete_action}", [ $this, 'delete_existing_subscriber'] );
+
+        add_action( "wp_ajax_{$this->refresh_list_data}", [ $this, 'refresh_list_data'] );
+    }
+
+    public function refresh_list_data(){
+
+        global $wpdb;
+        $table = $this->get_table();
+        $response = '';
+
+        if( ! defined('DOING_AJAX') || ! DOING_AJAX ) return;
+
+        $sql = "SELECT * FROM $table ORDER BY created_at DESC LIMIT 10";
+
+        $rows = $wpdb->get_results( $sql );
+
+        foreach ( $rows as $key => $row ){
+            ob_start();
+            ?>
+            <tr data-item-id="<?php echo esc_attr( $row->id ); ?>">
+                <td><?php echo esc_html( $key + 1 ); ?></td>
+                <td class="lowercase subscriber-email"><?php echo esc_html( $row->email ); ?></td>
+                <td class="create_time"><?php echo esc_html( $row->created_at ); ?></td>
+                <td class="update_time"><?php echo esc_html( $row->updated_at ); ?></td>
+                <td>
+                    <a href="javascript:void(0)" data-edit-id="<?php echo esc_attr( $row->id ); ?>" class="wsf-item-edit">Edit</a>
+                    <a href="javascript:void(0)" data-delete-id="<?php echo esc_attr( $row->id ); ?>" class="wsf-item-delete">Delete</a>
+                </td>
+            </tr>
+            
+            <?php
+            $response .= ob_get_clean();
+        }
+
+        wp_send_json_success( $response );
     }
 
     public function delete_existing_subscriber(){
@@ -68,13 +107,13 @@ class Ajax_Handler{
 
         $wpdb->update( $table, $data, $where );
 
-        $responsse = [
+        $response = [
             'id'          => $id,
             'email'       => $email,
             'update_time' => $current_time,
         ];
         
-        wp_send_json_success( $responsse );
+        wp_send_json_success( $response );
     }
     
     public function add_new_subscriber(){

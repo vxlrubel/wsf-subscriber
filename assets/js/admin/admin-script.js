@@ -12,6 +12,36 @@
             this.updateSubscriber();
             this.destroyPopupUpdateForm();
             this.deleteExistingSubscriber();
+            this.refreshSubscriberList();
+        }
+
+        refreshSubscriberList(){
+            SUBSCRIBER_LIST_PARENT.on('click', 'button.wsf-list-refresh', function(e){
+                e.preventDefault();
+
+                let data = {
+                    action: 'refresh_list_data'
+                }
+
+                $.ajax({
+                    type   : 'GET',
+                    url    : ws.ajax_url,
+                    data   : data,
+                    success: (response) => {
+                        SUBSCRIBER_LIST_PARENT.find('tbody').empty().html( response.data );
+                        SUBSCRIBER_LIST_PARENT.find('span.wsf-loading').fadeOut( 300, ()=>{
+                            SUBSCRIBER_LIST_PARENT.find('span.wsf-loading').remove();
+                        } );
+                        
+                        $(this).removeAttr('disabled');
+                    },
+                    beforeSend: () => {
+                        $(this).attr( 'disabled', 'disabled' );
+                        $(this).after('<span class="wsf-loading"></span>');
+                    }
+                });
+                
+            });
         }
 
         deleteExistingSubscriber(){
