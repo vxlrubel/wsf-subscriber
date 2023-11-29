@@ -9,17 +9,39 @@ class Ajax_Handler{
 
     protected $add_action = 'add_new_subscriber';
     protected $update_action = 'subscribe_update';
+    protected $delete_action = 'delete_existing_subscriber';
 
     public function __construct(){
 
         add_action( "wp_ajax_{$this->add_action}", [ $this, 'add_new_subscriber'] );
+
         add_action( "wp_ajax_{$this->update_action}", [ $this, 'update_subscriber'] );
+
+        add_action( "wp_ajax_{$this->delete_action}", [ $this, 'delete_existing_subscriber'] );
+    }
+
+    public function delete_existing_subscriber(){
+        
+        global $wpdb;
+        $table = $this->get_table();
+
+        if( ! defined('DOING_AJAX') || ! DOING_AJAX ) return;
+
+        if( empty( $_POST['id'] ) || $_POST['id'] == null ) {
+            wp_send_json_error( 'something went wrong.' );
+        }
+
+        $where = [ 'id' => (int)$_POST['id'] ];
+        
+        $wpdb->delete( $table, $where );
+        
+        wp_send_json_success('delete successfully');
     }
 
     public function update_subscriber(){
         
         global $wpdb;
-        $table = $wpdb->prefix . 'email_subscribers';
+        $table = $this->get_table();
         
         if( ! defined('DOING_AJAX') || ! DOING_AJAX ) return;
 
@@ -31,7 +53,7 @@ class Ajax_Handler{
             wp_send_json_error( 'Email is required' );
         }
 
-        $id           = $_POST['id'];
+        $id           = (int)$_POST['id'];
         $email        = sanitize_email( $_POST['email'] );
         $current_time = current_time( 'mysql' );
 
@@ -46,14 +68,19 @@ class Ajax_Handler{
 
         $wpdb->update( $table, $data, $where );
 
-        wp_send_json_success( 'data update successfully' );
+        $responsse = [
+            'id'          => $id,
+            'email'       => $email,
+            'update_time' => $current_time,
+        ];
+        
+        wp_send_json_success( $responsse );
     }
     
     public function add_new_subscriber(){
 
         global $wpdb;
-
-        $table = "{$wpdb->prefix}email_subscribers";
+        $table = $this->get_table();
 
         if( ! defined('DOING_AJAX') || ! DOING_AJAX ) return;
 
@@ -94,5 +121,17 @@ class Ajax_Handler{
 
         return $data;
 
+    }
+
+
+    /**
+     * get the subscriber table
+     *
+     * @return void
+     */
+    private function get_table(){
+        global $wpdb;
+        $table = $wpdb->prefix . 'email_subscribers';
+        return $table;
     }
 }

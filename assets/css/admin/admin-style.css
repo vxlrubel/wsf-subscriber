@@ -150,6 +150,7 @@
 	right: 0;
 	bottom: 0;
 	background: rgba(0,0,0,0.3);
+    animation: wsf-opacity 0.3s ease-in-out;
 }
 .wsf-list-parent .edit-form {
 	position: sticky;
@@ -162,6 +163,7 @@
     margin: 0 auto;
     border-radius: 4px;
 	z-index: 99999;
+    animation: wsf-siide-up 0.3s ease-in-out;
 }
 .wsf-list-parent .edit-form > * {
     border: 1px solid #8c8f94;
@@ -189,4 +191,21 @@
 .wsf-list-parent .edit-form button:hover{
     background-color: var(--wsf-color-secondary);
     border-color: var(--wsf-color-secondary);
+}
+
+@keyframes wsf-opacity{
+    0%{
+        opacity: 0;
+    }100%{
+        opacity: 1;
+    }
+}
+@keyframes wsf-siide-up{
+    0%{
+        transform: translateY(50px);
+        opacity: 0;
+    }100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

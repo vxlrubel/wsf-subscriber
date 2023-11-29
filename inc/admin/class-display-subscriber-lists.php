@@ -106,8 +106,8 @@ class Display_Subscriber_Lists{
             <tr data-item-id="<?php echo esc_attr( $row->id ); ?>">
                 <td><?php echo esc_html( $key + 1 ); ?></td>
                 <td class="lowercase subscriber-email"><?php echo esc_html( $row->email ); ?></td>
-                <td><?php echo esc_html( $row->created_at ); ?></td>
-                <td><?php echo esc_html( $row->updated_at ); ?></td>
+                <td class="create_time"><?php echo esc_html( $row->created_at ); ?></td>
+                <td class="update_time"><?php echo esc_html( $row->updated_at ); ?></td>
                 <td>
                     <a href="javascript:void(0)" data-edit-id="<?php echo esc_attr( $row->id ); ?>" class="wsf-item-edit">Edit</a>
                     <a href="javascript:void(0)" data-delete-id="<?php echo esc_attr( $row->id ); ?>" class="wsf-item-delete">Delete</a>

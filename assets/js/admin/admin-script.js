@@ -11,8 +11,38 @@
             this.addNewSubscriberSubmitionForm();
             this.updateSubscriber();
             this.destroyPopupUpdateForm();
+            this.deleteExistingSubscriber();
         }
 
+        deleteExistingSubscriber(){
+            SUBSCRIBER_LIST_PARENT.on('click', 'a.wsf-item-delete', function(e){
+                e.preventDefault();
+                let id   = $(this).data('delete-id');
+                let data = {
+                    id    : id,
+                    action: 'delete_existing_subscriber'
+                }
+                
+                $.ajax({
+                    type   : 'POST',
+                    url    : ws.ajax_url,
+                    data   : data,
+                    success: ()=>{
+                        let deleted_row = $(this).closest(`tr[data-item-id="${id}"]`);
+                        deleted_row
+                        .css( 'background-color', '#FC427B' )
+                        .fadeOut( 300, ()=>{
+                            deleted_row.remove();
+                        } );
+                    },
+                    
+                    beforeSend: ()=>{
+                        $(this).text('loading...')
+                    }
+                });
+            })
+        }
+        
         destroyPopupUpdateForm(){
             SUBSCRIBER_LIST_PARENT.on('click', 'div.wsf-overlay', function(e){
                 e.preventDefault();
@@ -36,15 +66,20 @@
                 type   : 'POST',
                 url    : ws.ajax_url,
                 data   : data,
-                success: function (response) {
-
-                    console.log(response.data)
-                    
+                success:  (response) => {
+                    let wrapper = SUBSCRIBER_LIST_PARENT.find('[data-item-id="' + response.data.id + '"]');
                     button.text(buttonText);
                     
                     $('div.wsf-overlay').fadeOut(300, ()=>{
                         $('div.wsf-overlay').remove();
-                   });
+                    });
+
+                    // update email
+                    wrapper.find('td.subscriber-email').text( response.data.email );
+                    
+                    // update updated time
+                    wrapper.find('td.update_time').text( response.data.update_time );
+                    
                 },
                 beforeSend: ()=>{
                     button.text('loading...');
