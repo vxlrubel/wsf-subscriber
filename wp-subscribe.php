@@ -30,11 +30,12 @@ final class WSF_Subscriber{
 
     public function __construct(){
 
+        // add admin scripts
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts'] );
 
-        // control rest route
-        // new Subscribe_REST_API_CONTROLLER;
-
+        // add front-end scripts
+        add_action( 'wp_enqueue_scripts', [ $this, 'frontend_scripts' ] );
+        
         // create dashboard menu
         new Dashboard_Menu;
 
@@ -44,6 +45,64 @@ final class WSF_Subscriber{
         // create database table
         register_activation_hook( __FILE__, [ $this, 'create_subscribers_table' ] );
 
+
+        add_shortcode( 'wsf_subscribe_form', [ $this, 'subscribe_form' ] );
+
+    }
+
+    /**
+     * enqueue frontend style and scripts
+     *
+     * @return void
+     */
+    public function frontend_scripts() {
+
+        // custom scripts
+        wp_enqueue_script( 
+            'wsf-custom-script',
+            plugins_url( 'assets/js/custom.js', __FILE__ ),
+            ['jquery'],
+            WSF_VERSION,
+            true
+        );
+
+        $args = [
+            'ajax_url' => esc_url( admin_url('admin-ajax.php') )
+        ];
+
+        wp_localize_script( 'wsf-custom-script', 'WPSFORM', $args );
+
+        // main style
+        wp_enqueue_style( 
+            'wsf-form-style',
+            plugins_url( 'assets/css/main.css', __FILE__ ),
+            [],
+            WSF_VERSION
+        );
+    }
+
+    /**
+     * shortcode callback method. it's return a subscriber form to subscribe
+     *
+     * @return void
+     */
+    public function subscribe_form(){
+        ob_start(); ?>
+        <form action="" class="wsf-add-new-subscriber-form">
+            <div class="label-text">
+                <h2>Subscribe Us</h2>
+                <span>Subscribe us to get our latest news. Your email will save with us.</span>
+            </div>
+            <div class="label-parent">
+                <input type="email" placeholder="Enter Email Address" name="email">
+                <input type="hidden" name="action" value="add_new_subscriber">
+                <?php wp_nonce_field( 'add_new_subscriber' ); ?>
+                <button type="button" id="add_new_subscriber">
+                    <?php echo esc_html('Subscribe'); ?>
+                </button>
+            </div>
+        </form>
+        <?php return ob_get_clean();
     }
     
     /**
@@ -52,8 +111,20 @@ final class WSF_Subscriber{
      * @return void
      */
     public function enqueue_admin_scripts(){
-        wp_enqueue_style('wp-subscribe-styles', plugins_url('assets/css/admin/admin-style.css', __FILE__), [], WSF_VERSION, 'all');
-        wp_enqueue_script( 'wp-subscribe-scripts', plugins_url('assets/js/admin/admin-script.js', __FILE__), ['jquery'], WSF_VERSION, true );
+        wp_enqueue_style(
+            'wp-subscribe-styles',
+            plugins_url('assets/css/admin/admin-style.css', __FILE__),
+            [],
+            WSF_VERSION,
+            'all'
+        );
+        wp_enqueue_script( 
+            'wp-subscribe-scripts',
+            plugins_url('assets/js/admin/admin-script.js', __FILE__),
+            ['jquery'],
+            WSF_VERSION,
+            true
+        );
         wp_localize_script( 'wp-subscribe-scripts', 'ws', [
             'ajax_url' => admin_url( 'admin-ajax.php' )
         ] );

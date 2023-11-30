@@ -7,25 +7,54 @@ defined('ABSPATH') || exit;
 
 class Ajax_Handler{
 
-    protected $add_action        = 'add_new_subscriber';
+    // define add new subscriber action
+    protected $add_action = 'add_new_subscriber';
 
-    protected $update_action     = 'subscribe_update';
+    // define update action
+    protected $update_action = 'subscribe_update';
 
-    protected $delete_action     = 'delete_existing_subscriber';
+    // define delete action
+    protected $delete_action = 'delete_existing_subscriber';
 
+    // defined refresh action
     protected $refresh_list_data = 'refresh_list_data';
 
+    // custom table name
+    private $table_name = 'email_subscribers';
+
+    /**
+     * Get subscriber table name
+     *
+     * @return void
+     */
+    private function get_table(){
+        global $wpdb;
+        $table = $wpdb->prefix . $this->table_name;
+        return $table;
+    }
+    
     public function __construct(){
 
+        // insert new subscriber
         add_action( "wp_ajax_{$this->add_action}", [ $this, 'add_new_subscriber'] );
 
+        add_action( "wp_ajax_nopriv_{$this->add_action}", [ $this, 'add_new_subscriber'] );
+
+        // update existing subscriber
         add_action( "wp_ajax_{$this->update_action}", [ $this, 'update_subscriber'] );
 
+        // delete existing subscriber
         add_action( "wp_ajax_{$this->delete_action}", [ $this, 'delete_existing_subscriber'] );
 
+        // refresh subscriber table list
         add_action( "wp_ajax_{$this->refresh_list_data}", [ $this, 'refresh_list_data'] );
     }
 
+    /**
+     * load subscriber table data
+     *
+     * @return void
+     */
     public function refresh_list_data(){
 
         global $wpdb;
@@ -59,6 +88,11 @@ class Ajax_Handler{
         wp_send_json_success( $response );
     }
 
+    /**
+     * delete existing subscriber from database table
+     *
+     * @return void
+     */
     public function delete_existing_subscriber(){
         
         global $wpdb;
@@ -77,6 +111,11 @@ class Ajax_Handler{
         wp_send_json_success('delete successfully');
     }
 
+    /**
+     * update existing subscriber using their ID
+     *
+     * @return void
+     */
     public function update_subscriber(){
         
         global $wpdb;
@@ -116,6 +155,11 @@ class Ajax_Handler{
         wp_send_json_success( $response );
     }
     
+    /**
+     * Insert new subscriber into the database
+     *
+     * @return void
+     */
     public function add_new_subscriber(){
 
         global $wpdb;
@@ -150,27 +194,4 @@ class Ajax_Handler{
 
     }
 
-    protected function get_email_from_database(){
-
-        global $wpdb;
-
-        $table = "{$wpdb->prefix}email_subscribers";
-
-        $data = $wpdb->get_results("SELECT email FROM $table");
-
-        return $data;
-
-    }
-
-
-    /**
-     * get the subscriber table
-     *
-     * @return void
-     */
-    private function get_table(){
-        global $wpdb;
-        $table = $wpdb->prefix . 'email_subscribers';
-        return $table;
-    }
 }
